@@ -13,32 +13,18 @@
  */
 
 //  define the action methods identifiers (constants)
-const ACTION_CB_CALL_BTN_ACCESSIBILITY = 'CB_CALL_BTN_ACCESSIBILITY';
-const ACTION_VM_CALL_BTN_ACCESSIBILITY = 'VM_CALL_BTN_ACCESSIBILITY';
-const ACTION_VM_RECORD_BTN_ACCESSIBILITY = 'VM_RECORD_BTN_ACCESSIBILITY';
+const ACTION_CB_CALL_BTN_BLOCKED = 'CB_CALL_BTN_BLOCKED';
 
 //  define the initial state values of the REDUX store
 const initialState = {
-  cbCallButtonAccessibility: false,
-  vmCallButtonAccessibility: false,
-  vmRecordButtonAccessibility: true,
+  cbCallButtonBlocked: false,
 };
 
 //  declare the actions (methods) for acting on the reducer
 export class Actions {
   // static dismissBar = () => ({ type: ACTION_DISMISS_BAR });
   static cbToggleCallButtonDisable = (value) => ({
-    type: ACTION_CB_CALL_BTN_ACCESSIBILITY,
-    value,
-  });
-
-  static vmToggleCallButtonDisable = (value) => ({
-    type: ACTION_VM_CALL_BTN_ACCESSIBILITY,
-    value,
-  });
-
-  static vmToggleRecordButtonDisable = (value) => ({
-    type: ACTION_VM_RECORD_BTN_ACCESSIBILITY,
+    type: ACTION_CB_CALL_BTN_BLOCKED,
     value,
   });
 }
@@ -51,25 +37,11 @@ export function reduce(state = initialState, action) {
    */
 
   switch (action.type) {
-    case ACTION_CB_CALL_BTN_ACCESSIBILITY: {
+    case ACTION_CB_CALL_BTN_BLOCKED: {
       //  amend the updated store property based in updated value received
       return {
         ...state,
-        cbCallButtonAccessibility: action.value,
-      };
-    }
-    case ACTION_VM_CALL_BTN_ACCESSIBILITY: {
-      //  amend the updated store property based in updated value received
-      return {
-        ...state,
-        vmCallButtonAccessibility: action.value,
-      };
-    }
-    case ACTION_VM_RECORD_BTN_ACCESSIBILITY: {
-      //  amend the updated store property based in updated value received
-      return {
-        ...state,
-        vmRecordButtonAccessibility: action.value,
+        cbCallButtonBlocked: action.value,
       };
     }
     default:

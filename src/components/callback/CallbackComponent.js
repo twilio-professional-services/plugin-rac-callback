@@ -18,7 +18,7 @@ export default class CallbackComponent extends React.Component {
     this.state = {};
   }
 
-  cbCallButtonAccessibility = async (state) => inqueueUtils.callButtonAccessibility(this.props.task, 'callback', state);
+  cbCallButtonBlocked = async (state) => inqueueUtils.callButtonAccessibility(this.props.task, 'callback', state);
 
   startCall = async () => {
     const manager = Flex.Manager.getInstance();
@@ -28,7 +28,7 @@ export default class CallbackComponent extends React.Component {
       alert('Change activity state from "Offline" to place call to contact');
       return;
     }
-    await this.cbCallButtonAccessibility(true);
+    await this.cbCallButtonBlocked(true);
 
     const { queueSid, attributes } = this.props.task;
     const { to, from } = attributes;
@@ -46,14 +46,14 @@ export default class CallbackComponent extends React.Component {
   };
 
   startTransfer = async () => {
-    await this.cbCallButtonAccessibility(false);
+    await this.cbCallButtonBlocked(false);
 
     return inqueueUtils.startTransfer(this.props.task);
   };
 
   render() {
     const { attributes } = this.props.task;
-    const timeReceived = moment(attributes.callTime.time_recvd);
+    const timeReceived = moment(attributes.callTime?.time_recvd);
     const localTz = moment.tz.guess();
     const localTimeShort = timeReceived.tz(localTz).format('MM-D-YYYY, h:mm:ss a z');
 
@@ -89,7 +89,7 @@ export default class CallbackComponent extends React.Component {
                 </Tooltip>
               </label>
 
-              <label style={styles.itemDetail}>{attributes.callTime.server_time_short}</label>
+              <label style={styles.itemDetail}>{attributes.callTime?.server_time_short}</label>
             </div>
           </li>
           <li>
@@ -114,11 +114,11 @@ export default class CallbackComponent extends React.Component {
           variant="contained"
           color="primary"
           onClick={async () => this.startCall()}
-          disabled={attributes.ui_plugin.cbCallButtonAccessibility}
+          disabled={attributes.ui_plugin?.cbCallButtonBlocked}
         >
           Place Call Now ( {attributes.to} )
         </Button>
-        <p style={styles.textCenter}>Not answering? Requeue to try later.</p>
+        {/* <p style={styles.textCenter}>Not answering? Requeue to try later.</p>
         <Button
           style={styles.cbButton}
           variant="outlined"
@@ -128,7 +128,7 @@ export default class CallbackComponent extends React.Component {
         >
           Requeue Callback ( {attributes.placeCallRetry} of 3 )
         </Button>
-        <p>&nbsp;</p>
+        <p>&nbsp;</p> */}
       </span>
     );
   }

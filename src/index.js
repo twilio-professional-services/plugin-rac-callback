@@ -1,5 +1,5 @@
 import * as FlexPlugin from 'flex-plugin';
 
-import InQueueMessagingPlugin from './InQueueMessagingPlugin';
+import RacCallbackPlugin from './RacCallbackPlugin';
 
-FlexPlugin.loadPlugin(InQueueMessagingPlugin);
+FlexPlugin.loadPlugin(RacCallbackPlugin);
