@@ -1,10 +1,10 @@
-<a  href="https://www.twilio.com">
-<img  src="https://static0.twilio.com/marketing/bundles/marketing/img/logos/wordmark-red.svg"  alt="Twilio"  width="250"  />
+<a href="https://www.twilio.com">
+<img src="https://static0.twilio.com/marketing/bundles/marketing/img/logos/wordmark-red.svg" alt="Twilio" width="250" />
 </a>
- 
-# Queued Callbacks and Voicemail for Flex
 
-The Queued Callback and Voicemail for Flex plugin helps Flex admins automate handling of agent callback requests from customers instead of having them wait longer in a queue.
+# RAC (Request-a-Call) Channel for Flex
+
+This plugin registers the RAC channel and customizes the TaskInfoPanel to allow for an outbound Voice channel call to be triggered from the RAC channel task.
 
 ## Set up
 
@@ -13,167 +13,89 @@ The Queued Callback and Voicemail for Flex plugin helps Flex admins automate han
 To deploy this plugin, you will need:
 
 - An active Twilio account with Flex provisioned. Refer to the [Flex Quickstart](https://www.twilio.com/docs/flex/quickstart/flex-basics#sign-up-for-or-sign-in-to-twilio-and-create-a-new-flex-project) to create one.
-- npm version 5.0.0 or later installed (type `npm -v` in your terminal to check)
-- Node version 12.21 or later installed (type `node -v` in your terminal to check)
-- [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart#install-twilio-cli) along with the [Flex CLI Plugin](https://www.twilio.com/docs/twilio-cli/plugins#available-plugins) and the [Serverless Plugin](https://www.twilio.com/docs/twilio-cli/plugins#available-plugins). Run the following commands to install them:
-
-	```
-	# Install the Twilio CLI
-	npm install twilio-cli -g
-	# Install the Serverless and Flex as Plugins
-	twilio plugins:install @twilio-labs/plugin-serverless
-	twilio plugins:install @twilio-labs/plugin-flex
-	```
-
+- npm version 6.0.0 or later installed (type `npm -v` in your terminal to check)
+- Node version 14.0.0 or later installed (type `node -v` in your terminal to check)
+- [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart#install-twilio-cli) along with the [Flex CLI Plugin](https://www.twilio.com/docs/twilio-cli/plugins#available-plugins). Run the following commands to install them:
+```
+# Install the Twilio CLI
+npm install twilio-cli -g
+```
 - A GitHub account
-- [Native Dialpad configured on your Flex instance](https://www.twilio.com/docs/flex/dialpad/enable)
 
 ### Twilio Account Settings
 
-Before we begin, we need to collect
-all the config values we need to run the application:
+Before we begin, we need to collect all the config values we need to run the application:
 
-| Config&nbsp;Value | Description                                                                                                                                                  |
+| Config Value | Description |
 | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Account&nbsp;Sid  | Your primary Twilio account identifier - find this [in the Console](https://www.twilio.com/console).                                                         |
-| Serverless Deployment Domain | The resulting Serverless domain name after deploying your Twilio Functions |
-| Workspace SID | Your Flex Task Assignment workspace SID - find this [in the Console TaskRouter Workspaces page](https://www.twilio.com/console/taskrouter/workspaces)
+| Channel Unique Name | The Task Channel Unique Name for 'RAC' from TaskRouter > Flex Task Assignment Workspace > Task Channels |
+| Auto Accept | Whether to Auto Accept tasks in the 'RAC' channel (true or false) |
+| Auto Dial | Whether to automatically StartOutboundDial for the 'RAC' channel tasks (true or false)
 
 ### Local development
-
+  
 After the above requirements have been met:
 
 1. Clone this repository
-
 ```
-git clone git@github.com:twilio-labs/plugin-queued-callbacks-and-voicemail.git
+git clone https://github.com/randyjohnston/plugin-rac-callback
 ```
 
-2. Change into the `public` subdirectory of the repo and run the following:
-
+2. Change into the `public` subdirectory of the repo and run the following: 
 ```
-cd plugin-queued-callbacks-and-voicemail/public && mv appConfig.example.js appConfig.js
+cd plugin-rac-callback/public && mv appConfig.example.js appConfig.js
 ```
 
 3. Install dependencies
-
 ```bash
 npm install
 ```
 
-4. [Deploy your Twilio Functions and Assets](#twilio-serverless-deployment)
-
 5. Run the application
-
 ```bash
 twilio flex:plugins:start
 ```
-
-See [Twilio Account Settings](#twilio-account-settings) to locate the necessary environment variables.
-
-7. Run the application
-
-```bash
-npm start
-```
-
-Alternatively, you can use this command to start the server in development mode. It will reload whenever you change any files.
-
-```bash
-npm run dev
-```
+See [Twilio Account Settings](#twilio-account-settings) to locate the necessary environment variables.  
 
 8. Navigate to [http://localhost:3000](http://localhost:3000)
+  
 
-That's it!
-
-### Twilio Serverless deployment
-
-You need to deploy the functions associated with the Callback and Voicemail Flex plugin to your Flex instance. The functions are called from the plugin you will deploy in the next step and integrate with TaskRouter, passing in required attributes to generate the callback and voicemail tasks, depending on the customer selection while listening to the in-queue menu options.
-
-#### Pre-deployment Steps
-
-1. From the root directory of your copy of the source code, change into `serverless` and rename `.env.example` to `.env`.
-
-```
-cd serverless && mv .env.example .env
-```
-
-2. Open `.env` with your text editor and modify TWILIO_WORKSPACE_SID with your Flex Task Assignment SID.
-
-```
-TWILIO_WORKSPACE_SID=WSxxxxxxxxxxxxxxxxxxxxxx`
-```
-
-3. To deploy your Callback and Voicemail functions and assets, run the following:
-
-```
-$ twilio serverless:deploy --assets
-
-## Example Output
-Deploying functions & assets to the Twilio Runtime
-Env Variables
-⠇ Creating 4 Functions
-✔ Serverless project successfully deployed
-
-Deployment Details
-Domain: plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io
-Service:
-  plugin-queued-callbacks-voicemail-functions 
-Functions:
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/inqueue-callback
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/inqueue-utils  
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/queue-menu
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/inqueue-voicemail
-
-Assets:
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/assets/alertTone.mp3
-  https://plugin-queued-callbacks-voicemail-functions-xxxx-dev.twil.io/assets/guitar_music.mp3
-```
-
-_Note:_ Copy and save the domain returned when you deploy a function. You will need it in the next step. If you forget to copy the domain, you can also find it by navigating to [Functions > API](https://www.twilio.com/console/functions/api) in the Twilio Console.
-
-> Debugging Tip: Pass the -l or logging flag to review deployment logs. For example, you can pass `-l debug` to turn on debugging logs.
-
-### Deploy your Flex Plugin 
+### Deploy your Flex Plugin
 
 Once you have deployed the function, it is time to deploy the plugin to your Flex instance.
 
-Run the following commands in the plugin root directory. We will leverage the Twilio CLI to build and deploy the Plugin.
+Run the following commands in the plugin root directory. We will leverage the Twilio CLI to build and deploy the Plugin.  
 
 1. Rename `.env.example` to `.env`.
+
 2. Open `.env` with your text editor and modify the `REACT_APP_SERVICE_BASE_URL` property to the Domain name you copied in the previous step. Make sure to prefix it with "https://".
-	
-	```
-	plugin-queued-callbacks-and-voicemail $ mv .env.example .env
-	
-	# .env
-	REACT_APP_SERVICE_BASE_URL=https://plugin-queued-callbacks-voicemail-functions-4135-dev.twil.io
-	```
+```
+plugin-rac-callback$ mv .env.example .env
+# .env
+REACT_APP_CHANNEL_UNIQUE_NAME=rac
+REACT_APP_CHANNEL_AUTO_ACCEPT=true
+REACT_APP_CHANNEL_AUTO_DIAL=true
+```
 
 3. When you are ready to deploy the plugin, run the following in a command shell:
-	
-	```
-	plugin-queued-callbacks-and-voicemail $ twilio flex:plugins:deploy --major --changelog "Updating to use the latest Twilio CLI Flex plugin" --description "Queued callbacks and voicemail"
-	``` 
-
+```
+plugin-rac-callback$ twilio flex:plugins:deploy --major --changelog "Updating to use the latest Twilio CLI Flex plugin" --description "plugin rac callback"
+```
+  
 4. To enable the plugin on your contact center, follow the suggested next step on the deployment confirmation. To enable it via the Flex UI, see the [Plugins Dashboard documentation](https://www.twilio.com/docs/flex/developer/plugins/dashboard#stage-plugin-changes).
 
 
-## Configurations
+## Required Task Attributes
 
-The serverless implementation can be customized using the file [`options.private.js`](serverless/functions/options.private.js). Options include: 
+For the plugin to display and function, the following task attributes are expected:
 
-* `sayOptions`: Attributes for the `<Say>` verb used to prompt the customer. You can read more about these attributes and their values on [TwiML™ Voice: `<Say>`](https://www.twilio.com/docs/voice/twiml/say)
-* `holdMusicUrl`: Relative or absolute path to the audio file for hold music (default: `/assets/guitar_music.mp3`). If no domain is provided (i.e. relative path), the serverless domain will be used.
-* `getEwt`: Enable Estimated Waiting Time in voice prompt (default: `true`)
-* `statPeriod`: Time interval (in minutes) for Estimated Waiting Time stats evaluation (default: `5` minutes)
-* `getQueuePosition`: Enable Queue Position in voice prompt (default: `true`) 
-* `VoiceMailTaskPriority`: Priority for the Task generatared by the VoiceMail (default: `50`)
-* `VoiceMailAlertTone`: Relative or absolute path to the [ringback tone](https://www.twilio.com/docs/voice/twiml/dial#ringtone) that Twilio will play back to the Agent when calling a customer from a voice mail task (default: `/assets/alertTone.mp3`). If no domain is provided (i.e. relative path), the serverless domain will be used. This is not currently implemented in the Flex plugin, and it's for future usage
-* `CallbackTaskPriority`: Priority for the Task generatared by VoiceMail (default: `50`)
-* `CallbackAlertTone`: Relative or absolute path to the [ringback tone](https://www.twilio.com/docs/voice/twiml/dial#ringtone) that Twilio will play back to the Agent when calling a customer from a callback task (default: `/assets/alertTone.mp3`). If no domain is provided (i.e. relative path), the serverless domain will be used. This is not currently implemented in the Flex plugin, and it's for future usage
-* `TimeZone`: Timezone configuration. This is used to report time and date of voicemail (default `America/Los_Angeles`)
+*  `name`: Name of the task, such as `"Callback: +15553214321"`
+*  `callerId`: Outbound caller ID to use for the outbound call, such as `"callerId": "+13084705049",`
+*  `callbackDestination`: RAC requester's phone number to receive the outbound call, such as `"+15553214321"`
+*  `mainTimeZone`: The main [time zone](https://momentjs.com/timezone/) for the unlocalized date-time of the original request, such as `Etc/UTC` or `America/Los_Angeles` (displayed on TaskInfoPanel in addition to the agent-localized date-time)
+*  `utcDateTimeReceived`: An ISO 8601, UTC  date-time stamp when the RAC was originally requested on the origin server, such as `2022-02-11T22:24:49.427Z`
+*  `direction`: This should be `inbound`. The equivalent `outbound` task will be linked to the original `inbound` task for Insights reporting.
+  
 
 ## License
 

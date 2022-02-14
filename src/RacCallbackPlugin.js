@@ -1,12 +1,13 @@
-import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
+import { Actions, TaskChannelCapability } from '@twilio/flex-ui';
 import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
 import React from 'react';
 
-import reducers, { namespace } from './states';
 import { CallbackComponent } from './components';
 
 const PLUGIN_NAME = 'RacCallbackPlugin';
+const autoAcceptEnabled = JSON.parse(process.env.REACT_APP_CHANNEL_AUTO_ACCEPT);
+const channelUniqueName = process.env.REACT_APP_CHANNEL_UNIQUE_NAME;
 
 export default class RacCallbackPlugin extends FlexPlugin {
   constructor() {
@@ -21,9 +22,20 @@ export default class RacCallbackPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   async init(flex, manager) {
-    this.registerReducers(manager);
-
     this.registerCallbackChannel(flex, manager);
+
+    if (autoAcceptEnabled) {
+      manager.workerClient.on('reservationCreated', (reservation) => {
+        if (reservation.task.taskChannelUniqueName === channelUniqueName) {
+          flex.Actions.invokeAction('AcceptTask', { sid: reservation.sid });
+        }
+      });
+      Actions.addListener('afterAcceptTask', async (payload) => {
+        if (payload.task.taskChannelUniqueName === channelUniqueName) {
+          Actions.invokeAction('SelectTask', { sid: payload.task.sid });
+        }
+      });
+    }
   }
 
   /**
@@ -32,42 +44,28 @@ export default class RacCallbackPlugin extends FlexPlugin {
   registerCallbackChannel(flex, manager) {
     // Create RAC Channel
     const RacChannel = flex.DefaultTaskChannels.createDefaultTaskChannel(
-      'rac',
-      (task) => task.taskChannelUniqueName === 'rac',
+      process.env.REACT_APP_CHANNEL_UNIQUE_NAME,
+      (task) => task.taskChannelUniqueName === process.env.REACT_APP_CHANNEL_UNIQUE_NAME,
       'CallbackIcon',
       'CallbackIcon',
       'palegreen',
     );
-    // Basic Voicemail Channel Settings
+    // Basic RAC Channel Settings
     RacChannel.templates.TaskListItem.firstLine = (task) => `${task.queueName}: ${task.attributes.name}`;
     RacChannel.templates.TaskCanvasHeader.title = (task) => `${task.queueName}: ${task.attributes.name}`;
     RacChannel.templates.IncomingTaskCanvas.firstLine = (task) => task.queueName;
-    // Lead Channel Icon
+    // RAC Channel Icon
     RacChannel.icons.active = <PhoneCallbackIcon key="active-callback-icon" />;
     RacChannel.icons.list = <PhoneCallbackIcon key="list-callback-icon" />;
     RacChannel.icons.main = <PhoneCallbackIcon key="main-callback-icon" />;
-    // Register Lead Channel
+    // Add Wrapup to RAC Channel
+    RacChannel.capabilities.add(TaskChannelCapability.Wrapup);
+    // Register RAC Channel
     flex.TaskChannels.register(RacChannel);
 
-    flex.TaskInfoPanel.Content.replace(<CallbackComponent key="demo-component" manager={manager} />, {
+    flex.TaskInfoPanel.Content.replace(<CallbackComponent key="callback-component" manager={manager} />, {
       sortOrder: -1,
-      if: (props) => props.task.taskChannelUniqueName === 'rac',
+      if: (props) => props.task.taskChannelUniqueName === process.env.REACT_APP_CHANNEL_UNIQUE_NAME,
     });
-  }
-
-  /**
-   * Registers the plugin reducers
-   *
-   * @param manager { Flex.Manager }
-   */
-  registerReducers(manager) {
-    if (!manager.store.addReducer) {
-      // eslint: disable-next-line
-      console.error(`You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${VERSION}`);
-      return;
-    }
-
-    //  add the reducers to the manager store
-    manager.store.addReducer(namespace, reducers);
   }
 }
