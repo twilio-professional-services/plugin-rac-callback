@@ -1,1 +1,1 @@
-export { default as CallbackComponent } from './callback';
+export { default as CallbackContainer } from './callback';

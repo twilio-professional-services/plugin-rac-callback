@@ -68,12 +68,12 @@ Run the following commands in the plugin root directory. We will leverage the Tw
 
 1. Rename `.env.example` to `.env`.
 
-2. Open `.env` with your text editor and modify the `REACT_APP_SERVICE_BASE_URL` property to the Domain name you copied in the previous step. Make sure to prefix it with "https://".
+2. Open `.env` with your text editor and modify the `REACT_APP_{OPTION}` properties similarly to the example below.
 ```
 plugin-rac-callback$ mv .env.example .env
 # .env
 REACT_APP_CHANNEL_UNIQUE_NAME=rac
-REACT_APP_CHANNEL_AUTO_ACCEPT=true
+REACT_APP_CHANNEL_AUTO_ACCEPT=false
 REACT_APP_CHANNEL_AUTO_DIAL=true
 ```
 
@@ -90,7 +90,7 @@ plugin-rac-callback$ twilio flex:plugins:deploy --major --changelog "Updating to
 For the plugin to display and function, the following task attributes are expected:
 
 *  `name`: Name of the task, such as `"Callback: +15553214321"`
-*  `callerId`: Outbound caller ID to use for the outbound call, such as `"callerId": "+13084705049",`
+*  `callerId`: Outbound caller ID to use for the outbound call, such as `"callerId": "+13084705049"`
 *  `callbackDestination`: RAC requester's phone number to receive the outbound call, such as `"+15553214321"`
 *  `mainTimeZone`: The main [time zone](https://momentjs.com/timezone/) for the unlocalized date-time of the original request, such as `Etc/UTC` or `America/Los_Angeles` (displayed on TaskInfoPanel in addition to the agent-localized date-time)
 *  `utcDateTimeReceived`: An ISO 8601, UTC  date-time stamp when the RAC was originally requested on the origin server, such as `2022-02-11T22:24:49.427Z`

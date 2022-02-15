@@ -3,7 +3,7 @@ import { Actions, TaskChannelCapability } from '@twilio/flex-ui';
 import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
 import React from 'react';
 
-import { CallbackComponent } from './components';
+import { CallbackContainer } from './components';
 
 const PLUGIN_NAME = 'RacCallbackPlugin';
 const autoAcceptEnabled = JSON.parse(process.env.REACT_APP_CHANNEL_AUTO_ACCEPT);
@@ -63,7 +63,7 @@ export default class RacCallbackPlugin extends FlexPlugin {
     // Register RAC Channel
     flex.TaskChannels.register(RacChannel);
 
-    flex.TaskInfoPanel.Content.replace(<CallbackComponent key="callback-component" manager={manager} />, {
+    flex.TaskInfoPanel.Content.replace(<CallbackContainer key="callback-component" manager={manager} />, {
       sortOrder: -1,
       if: (props) => props.task.taskChannelUniqueName === process.env.REACT_APP_CHANNEL_UNIQUE_NAME,
     });
