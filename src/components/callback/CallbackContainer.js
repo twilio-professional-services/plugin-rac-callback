@@ -36,17 +36,14 @@ export default class CallbackContainer extends React.Component {
 
   checkIfWorkerHasVoiceCall() {
     const workerTasksArr = Array.from(this.props.manager.store.getState().flex.worker.tasks.values());
-    if (workerTasksArr) {
-      workerTasksArr.forEach((potentialVoiceTask) => {
-        if (TaskHelper.isCallTask(potentialVoiceTask)) {
-          this.setState({ cbCallButtonBlocked: true });
-          return;
-        }
-        this.setState({ cbCallButtonBlocked: false });
-        if (autoDialEnabled && this.props.task.status === 'accepted') {
-          this.startCall();
-        }
-      });
+    const workerHasVoiceTask = workerTasksArr.some((potentialVoiceTask) => TaskHelper.isCallTask(potentialVoiceTask));
+    if (workerHasVoiceTask) {
+      this.setState({ cbCallButtonBlocked: true });
+    } else {
+      this.setState({ cbCallButtonBlocked: false });
+      if (autoDialEnabled && this.props.task.status === 'accepted') {
+        this.startCall();
+      }
     }
   }
 
