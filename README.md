@@ -6,6 +6,10 @@
 
 This plugin registers the RAC channel and customizes the TaskInfoPanel to allow for an outbound Voice channel call to be triggered from the RAC channel task.
 
+## Notice
+
+This plugin is no longer maintained as of September 21, 2022.  Work to support this feature in Flex v2 has been transitioned to the [Twilio Professional Services Flex Project Template](https://github.com/twilio-professional-services/twilio-proserv-flex-project-template/tree/main/plugin-flex-ts-template-v2/src/feature-library/callback-and-voicemail).
+
 ## Set up
 
 ### Requirements
