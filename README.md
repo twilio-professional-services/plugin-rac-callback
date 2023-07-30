@@ -4,10 +4,14 @@
 
 # RAC (Request-a-Call) Channel for Flex
 
-This plugin registers the RAC channel and customizes the TaskInfoPanel to allow for an outbound Voice channel call to be triggered from the RAC channel task.
+> [!IMPORTANT]
+> The rac-callback concept is now available in the [Flex Plugin Library](https://www.twilio.com/docs/flex/developer/plugins/plugin-library). You may now install the callback feature set in one of the following ways:
+> - Via the plugin library by navigating to Flex UI > Admin > Plugins and selecting "Queued Callback And Voicemail"
+> - Via the [Flex Project Template](https://github.com/twilio-professional-services/flex-project-template), which allows you to orchestrate deployment of your entire Flex solution
+>
+> This repository is now redundant and has been archived.
 
-## Notice
-This plugin is no longer maintained as of September 21, 2022. Work to maintain this feature in Flex V2 has been moved over to the [Flex Project Template](https://github.com/twilio-professional-services/twilio-proserv-flex-project-template) where it is an [optional feature](https://github.com/twilio-professional-services/twilio-proserv-flex-project-template/tree/main/plugin-flex-ts-template-v2/src/feature-library/callback-and-voicemail/README.md)
+This plugin registers the RAC channel and customizes the TaskInfoPanel to allow for an outbound Voice channel call to be triggered from the RAC channel task.
 
 ## Set up
 
